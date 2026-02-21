@@ -2,7 +2,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Phone, 
   MapPin, 
@@ -20,6 +20,11 @@ import {
   Waves
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -112,8 +117,20 @@ const Navbar = () => {
 };
 
 const Hero = () => {
+  const container = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    
+    tl.from('.hero-badge', { y: 20, opacity: 0, duration: 0.8 })
+      .from('.hero-title', { y: 30, opacity: 0, duration: 1 }, '-=0.6')
+      .from('.hero-desc', { y: 20, opacity: 0, duration: 0.8 }, '-=0.7')
+      .from('.hero-btns', { y: 20, opacity: 0, duration: 0.8 }, '-=0.6')
+      .from('.hero-social', { opacity: 0, duration: 1 }, '-=0.4');
+  }, { scope: container });
+
   return (
-    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+    <section ref={container} className="relative min-h-screen flex items-center pt-20 overflow-hidden">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
@@ -121,28 +138,25 @@ const Hero = () => {
           alt="Professional Plumbing" 
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
+          loading="eager"
         />
         <div className="absolute inset-0 bg-slate-900/70"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="inline-block px-4 py-1.5 bg-blue-600/20 border border-blue-500/30 rounded-full text-blue-400 text-xs font-bold uppercase tracking-widest mb-6">
+          <div>
+            <span className="hero-badge inline-block px-4 py-1.5 bg-blue-600/20 border border-blue-500/30 rounded-full text-blue-400 text-xs font-bold uppercase tracking-widest mb-6">
               Expert Plumbing in Ferndale
             </span>
-            <h1 className="text-5xl md:text-8xl font-bold text-white leading-[1.1] mb-8 tracking-tight">
+            <h1 className="hero-title text-5xl md:text-8xl font-bold text-white leading-[1.1] mb-8 tracking-tight">
               Plumbing Done <span className="text-blue-500">Right</span>, The First Time.
             </h1>
-            <p className="text-lg md:text-2xl text-slate-300 mb-12 leading-relaxed max-w-2xl mx-auto">
+            <p className="hero-desc text-lg md:text-2xl text-slate-300 mb-12 leading-relaxed max-w-2xl mx-auto">
               From emergency leaks to full installations, we provide reliable, professional plumbing services across Ferndale and Randburg. 24/7 support when you need it most.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <div className="hero-btns flex flex-col sm:flex-row gap-6 justify-center">
               <a 
                 href="tel:+27832321233" 
                 className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 rounded-full font-bold text-xl transition-all flex items-center justify-center gap-3 shadow-2xl shadow-blue-600/40 group"
@@ -159,7 +173,7 @@ const Hero = () => {
               </a>
             </div>
 
-            <div className="mt-16 flex flex-col items-center gap-6">
+            <div className="hero-social mt-16 flex flex-col items-center gap-6">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
                   <img 
@@ -167,6 +181,7 @@ const Hero = () => {
                     src={`https://i.pravatar.cc/100?img=${i + 10}`} 
                     alt="Customer" 
                     className="w-12 h-12 rounded-full border-2 border-slate-900 object-cover"
+                    loading="lazy"
                   />
                 ))}
               </div>
@@ -177,7 +192,7 @@ const Hero = () => {
                 <p className="text-slate-400 text-lg"><span className="text-white font-semibold">500+</span> Happy Customers in Randburg</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
@@ -248,6 +263,7 @@ const WhatsAppButton = () => (
 );
 
 const Gallery = () => {
+  const container = useRef<HTMLDivElement>(null);
   const projects = [
     {
       title: "Bathroom Pipe Burst",
@@ -269,8 +285,22 @@ const Gallery = () => {
     }
   ];
 
+  useGSAP(() => {
+    gsap.from('.gallery-item', {
+      scrollTrigger: {
+        trigger: container.current,
+        start: 'top 80%',
+      },
+      y: 50,
+      opacity: 0,
+      duration: 1,
+      stagger: 0.2,
+      ease: 'power3.out'
+    });
+  }, { scope: container });
+
   return (
-    <section id="gallery" className="py-24 bg-white">
+    <section id="gallery" ref={container} className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-4xl font-bold text-slate-900 mb-6 tracking-tight text-balance">Our Work in Action</h2>
@@ -281,13 +311,9 @@ const Gallery = () => {
 
         <div className="grid md:grid-cols-3 gap-10">
           {projects.map((project, idx) => (
-            <motion.div 
+            <div 
               key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="group"
+              className="gallery-item group"
             >
               <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl shadow-slate-200">
                 <img 
@@ -295,6 +321,7 @@ const Gallery = () => {
                   alt={project.title}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   referrerPolicy="no-referrer"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
                 
@@ -320,13 +347,14 @@ const Gallery = () => {
                     alt="Before" 
                     className="w-full h-48 object-cover rounded-2xl mb-6 shadow-2xl"
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                   />
                   <p className="text-slate-300 text-sm leading-relaxed">
                     Swipe or hover to see the professional transformation we delivered.
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>
@@ -335,6 +363,7 @@ const Gallery = () => {
 };
 
 const Services = () => {
+  const container = useRef<HTMLDivElement>(null);
   const services = [
     {
       title: 'Emergency Repairs',
@@ -380,8 +409,22 @@ const Services = () => {
     }
   ];
 
+  useGSAP(() => {
+    gsap.from('.service-card', {
+      scrollTrigger: {
+        trigger: container.current,
+        start: 'top 80%',
+      },
+      y: 40,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: 'back.out(1.7)'
+    });
+  }, { scope: container });
+
   return (
-    <section id="services" className="py-24 bg-slate-50">
+    <section id="services" ref={container} className="py-24 bg-slate-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-4xl font-bold text-slate-900 mb-6 tracking-tight">Full-Service Plumbing Solutions</h2>
@@ -395,7 +438,7 @@ const Services = () => {
             <motion.div 
               key={idx}
               whileHover={{ y: -10 }}
-              className={`bg-white p-10 rounded-[2.5rem] shadow-sm border ${service.border} transition-all relative overflow-hidden group`}
+              className={`service-card bg-white p-10 rounded-[2.5rem] shadow-sm border ${service.border} transition-all relative overflow-hidden group`}
             >
               <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
               <div className={`${service.color} w-20 h-20 rounded-3xl flex items-center justify-center mb-8 relative z-10 shadow-inner`}>
@@ -417,11 +460,38 @@ const Services = () => {
 };
 
 const About = () => {
+  const container = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    gsap.from('.about-content > *', {
+      scrollTrigger: {
+        trigger: container.current,
+        start: 'top 80%',
+      },
+      x: -30,
+      opacity: 0,
+      duration: 1,
+      stagger: 0.2,
+      ease: 'power3.out'
+    });
+    
+    gsap.from('.about-image', {
+      scrollTrigger: {
+        trigger: container.current,
+        start: 'top 80%',
+      },
+      x: 30,
+      opacity: 0,
+      duration: 1.2,
+      ease: 'power3.out'
+    });
+  }, { scope: container });
+
   return (
-    <section id="about" className="py-24 bg-white">
+    <section id="about" ref={container} className="py-24 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-20 items-center">
-          <div className="order-2 md:order-1">
+          <div className="about-content order-2 md:order-1">
             <span className="text-blue-600 font-black uppercase tracking-[0.2em] text-xs mb-6 block">Our Story</span>
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-8 tracking-tight leading-[1.1]">
               Decades of Excellence in <span className="text-blue-600">Ferndale</span> Plumbing.
@@ -445,13 +515,14 @@ const About = () => {
               </div>
             </div>
           </div>
-          <div className="order-1 md:order-2 relative">
+          <div className="about-image order-1 md:order-2 relative">
             <div className="aspect-square rounded-[3rem] overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
               <img 
                 src="https://images.unsplash.com/photo-1621905251918-48416bd8575a?auto=format&fit=crop&q=80&w=1000" 
                 alt="Our Team" 
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
+                loading="lazy"
               />
             </div>
             <div className="absolute -bottom-10 -left-10 bg-blue-600 text-white p-10 rounded-[2.5rem] shadow-2xl hidden lg:block max-w-xs -rotate-6">
@@ -467,6 +538,7 @@ const About = () => {
 };
 
 const WhyUs = () => {
+  const container = useRef<HTMLDivElement>(null);
   const points = [
     { title: 'Licensed & Insured', desc: 'Fully qualified professionals you can trust.' },
     { title: '24/7 Availability', desc: 'Emergency support anytime, day or night.' },
@@ -474,17 +546,43 @@ const WhyUs = () => {
     { title: 'Guaranteed Work', desc: 'We stand by the quality of our craftsmanship.' },
   ];
 
+  useGSAP(() => {
+    gsap.from('.why-image', {
+      scrollTrigger: {
+        trigger: container.current,
+        start: 'top 80%',
+      },
+      scale: 0.9,
+      opacity: 0,
+      duration: 1.2,
+      ease: 'power3.out'
+    });
+    
+    gsap.from('.why-point', {
+      scrollTrigger: {
+        trigger: container.current,
+        start: 'top 80%',
+      },
+      x: 30,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: 'power3.out'
+    });
+  }, { scope: container });
+
   return (
-    <section className="py-24 bg-white overflow-hidden">
+    <section id="whyus" ref={container} className="py-24 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-16 items-center">
-          <div className="relative">
+          <div className="why-image relative">
             <div className="absolute -top-10 -left-10 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50"></div>
             <img 
               src="https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&q=80&w=1000" 
               alt="Plumber at work" 
               className="rounded-[40px] shadow-2xl relative z-10"
               referrerPolicy="no-referrer"
+              loading="lazy"
             />
             <div className="absolute -bottom-6 -right-6 bg-blue-600 text-white p-8 rounded-3xl shadow-xl z-20 max-w-[240px]">
               <div className="text-4xl font-bold mb-2">100%</div>
@@ -494,13 +592,13 @@ const WhyUs = () => {
 
           <div>
             <h2 className="text-4xl font-bold text-slate-900 mb-8 tracking-tight">Why Ferndale Trusts Us</h2>
-            <p className="text-lg text-slate-600 mb-10 leading-relaxed">
+            <p className="text-lg text-slate-600 mb-10 leading-relaxed text-pretty">
               We've built our reputation on honesty, quality, and speed. When you call Plumber Done Right, you're getting a team that treats your home like their own.
             </p>
 
             <div className="space-y-6">
               {points.map((point, idx) => (
-                <div key={idx} className="flex gap-4">
+                <div key={idx} className="why-point flex gap-4">
                   <div className="flex-shrink-0 mt-1">
                     <CheckCircle2 className="w-6 h-6 text-blue-600" />
                   </div>
