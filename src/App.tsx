@@ -122,11 +122,11 @@ const Hero = () => {
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+        <div className="absolute inset-0 bg-slate-900/70"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
-        <div className="max-w-2xl">
+        <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -135,46 +135,46 @@ const Hero = () => {
             <span className="inline-block px-4 py-1.5 bg-blue-600/20 border border-blue-500/30 rounded-full text-blue-400 text-xs font-bold uppercase tracking-widest mb-6">
               Expert Plumbing in Ferndale
             </span>
-            <h1 className="text-5xl md:text-7xl font-bold text-white leading-[1.1] mb-8 tracking-tight">
+            <h1 className="text-5xl md:text-8xl font-bold text-white leading-[1.1] mb-8 tracking-tight">
               Plumbing Done <span className="text-blue-500">Right</span>, The First Time.
             </h1>
-            <p className="text-lg md:text-xl text-slate-300 mb-10 leading-relaxed">
+            <p className="text-lg md:text-2xl text-slate-300 mb-12 leading-relaxed max-w-2xl mx-auto">
               From emergency leaks to full installations, we provide reliable, professional plumbing services across Ferndale and Randburg. 24/7 support when you need it most.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <a 
                 href="tel:+27832321233" 
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-600/30 group"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-5 rounded-full font-bold text-xl transition-all flex items-center justify-center gap-3 shadow-2xl shadow-blue-600/40 group"
               >
-                <Phone className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                <Phone className="w-6 h-6 group-hover:rotate-12 transition-transform" />
                 Emergency Call
               </a>
               <a 
                 href="#services" 
-                className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-full font-bold text-lg transition-all flex items-center justify-center gap-2"
+                className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-full font-bold text-xl transition-all flex items-center justify-center gap-2"
               >
                 Our Services
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-6 h-6" />
               </a>
             </div>
 
-            <div className="mt-12 flex items-center gap-6">
+            <div className="mt-16 flex flex-col items-center gap-6">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
                   <img 
                     key={i}
                     src={`https://i.pravatar.cc/100?img=${i + 10}`} 
                     alt="Customer" 
-                    className="w-10 h-10 rounded-full border-2 border-slate-900 object-cover"
+                    className="w-12 h-12 rounded-full border-2 border-slate-900 object-cover"
                   />
                 ))}
               </div>
-              <div className="text-sm">
-                <div className="flex text-yellow-400 mb-0.5">
-                  {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-4 h-4 fill-current" />)}
+              <div className="text-center">
+                <div className="flex justify-center text-yellow-400 mb-1">
+                  {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-5 h-5 fill-current" />)}
                 </div>
-                <p className="text-slate-400"><span className="text-white font-semibold">500+</span> Happy Customers in Randburg</p>
+                <p className="text-slate-400 text-lg"><span className="text-white font-semibold">500+</span> Happy Customers in Randburg</p>
               </div>
             </div>
           </motion.div>
@@ -207,6 +207,25 @@ const Stats = () => {
     </div>
   );
 };
+
+const StickyMobileBar = () => (
+  <div className="md:hidden fixed bottom-0 left-0 w-full z-50 bg-white border-t border-slate-100 p-4 flex gap-4 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
+    <a 
+      href="tel:+27832321233" 
+      className="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg shadow-blue-600/20"
+    >
+      <Phone className="w-5 h-5" />
+      Call Now
+    </a>
+    <a 
+      href="tel:+27832321233" 
+      className="flex-1 bg-red-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg shadow-red-600/20"
+    >
+      <ShieldCheck className="w-5 h-5" />
+      Emergency
+    </a>
+  </div>
+);
 
 const WhatsAppButton = () => (
   <a 
@@ -772,7 +791,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-blue-100 selection:text-blue-900">
       <Navbar />
-      <main>
+      <main className="pb-24 md:pb-0">
         <Hero />
         <Stats />
         <About />
@@ -784,6 +803,7 @@ export default function App() {
       </main>
       <Footer />
       <WhatsAppButton />
+      <StickyMobileBar />
     </div>
   );
 }
