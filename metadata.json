@@ -1,0 +1,5 @@
+{
+  "name": "Plumber Done Right Ferndale",
+  "description": "Professional plumbing services in Ferndale, Randburg. Reliable, efficient, and done right the first time.",
+  "requestFramePermissions": ["geolocation"]
+}
